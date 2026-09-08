@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Send } from 'lucide-react';
+import { Send, Check } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Newsletter() {
@@ -53,7 +53,7 @@ export default function Newsletter() {
                 className="btn-gold px-6 py-4 rounded-xl flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 {subscribed ? (
-                  <span>✓ عضو شدید!</span>
+                  <span className="flex items-center gap-1"><Check size={16} /> عضو شدید!</span>
                 ) : (
                   <>
                     <Send size={18} />

@@ -24,7 +24,7 @@ export default function Header({ cartCount, wishlistCount, onCartClick, onSearch
     <header className="fixed top-0 left-0 right-0 z-50 glass">
       {/* Top bar */}
       <div className="bg-gradient-to-r from-gold-600 via-gold-500 to-gold-600 text-dark-900 text-center py-1.5 text-xs font-medium tracking-wide">
-        ✨ ارسال رایگان برای سفارش‌های بالای ۵ میلیون تومان | ضمانت اصالت کالا ✨
+        ارسال رایگان برای سفارش‌های بالای ۵ میلیون تومان | ضمانت اصالت کالا
       </div>
 
       {/* Main header */}

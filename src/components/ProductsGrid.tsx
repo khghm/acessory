@@ -105,8 +105,11 @@ export default function ProductsGrid({ products, onAddToCart, onToggleWishlist, 
 
         {sortedProducts.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">🔍</div>
+            <div className="w-20 h-20 mx-auto mb-4 bg-dark-800 border border-dark-600 rounded-full flex items-center justify-center">
+              <SlidersHorizontal size={32} className="text-dark-500" />
+            </div>
             <p className="text-dark-400 text-lg">محصولی یافت نشد</p>
+            <p className="text-dark-500 text-sm mt-2">لطفاً فیلترهای دیگری را امتحان کنید</p>
           </div>
         )}
       </div>

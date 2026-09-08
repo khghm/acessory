@@ -1,10 +1,20 @@
 import { motion } from 'framer-motion';
+import { Layers, Gem, Watch, CircleDot, Clock } from 'lucide-react';
 import { categories } from '../data/products';
 
 interface CategoriesProps {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
 }
+
+const iconMap: Record<string, React.ReactNode> = {
+  'layers': <Layers size={28} />,
+  'necklace': <CircleDot size={28} />,
+  'watch': <Watch size={28} />,
+  'gem': <Gem size={28} />,
+  'ring': <CircleDot size={28} />,
+  'clock': <Clock size={28} />,
+};
 
 export default function Categories({ selectedCategory, onCategoryChange }: CategoriesProps) {
   return (
@@ -42,7 +52,11 @@ export default function Categories({ selectedCategory, onCategoryChange }: Categ
                   : 'bg-dark-800/50 border border-dark-700 hover:border-gold-500/30 hover:bg-dark-700/50'
               }`}
             >
-              <div className="text-3xl mb-3">{category.icon}</div>
+              <div className={`mx-auto mb-3 w-12 h-12 rounded-xl flex items-center justify-center ${
+                selectedCategory === category.id ? 'text-gold-400' : 'text-dark-300 group-hover:text-gold-400'
+              } transition-colors`}>
+                {iconMap[category.icon]}
+              </div>
               <h3 className={`font-medium text-sm ${
                 selectedCategory === category.id ? 'text-gold-300' : 'text-dark-200'
               }`}>

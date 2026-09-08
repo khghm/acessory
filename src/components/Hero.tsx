@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { ArrowLeft, Sparkles, Diamond, Award } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -120,19 +120,19 @@ export default function Hero() {
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute top-12 -right-4 glass rounded-xl p-3 shadow-lg"
+                className="absolute top-12 -right-4 glass rounded-xl p-3 shadow-lg flex items-center gap-2"
               >
-                <div className="text-gold-400 text-2xl">💎</div>
-                <div className="text-xs text-dark-300 mt-1">الماس طبیعی</div>
+                <Diamond className="text-gold-400" size={24} />
+                <div className="text-xs text-dark-300">الماس طبیعی</div>
               </motion.div>
 
               <motion.div
                 animate={{ y: [5, -5, 5] }}
                 transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-16 -left-4 glass rounded-xl p-3 shadow-lg"
+                className="absolute bottom-16 -left-4 glass rounded-xl p-3 shadow-lg flex items-center gap-2"
               >
-                <div className="text-gold-400 text-2xl">✨</div>
-                <div className="text-xs text-dark-300 mt-1">طلای ۱۸ عیار</div>
+                <Award className="text-gold-400" size={24} />
+                <div className="text-xs text-dark-300">طلای ۱۸ عیار</div>
               </motion.div>
             </div>
           </motion.div>

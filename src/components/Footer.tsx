@@ -1,4 +1,5 @@
-import { MapPin, Phone, Mail, Instagram, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MapPin, Phone, Mail, Instagram, Send, Shield } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -83,6 +84,10 @@ export default function Footer() {
             © ۱۴۰۴ LUXE Accessories. تمامی حقوق محفوظ است.
           </p>
           <div className="flex items-center gap-4">
+            <Link to="/admin" className="flex items-center gap-2 text-dark-400 hover:text-gold-400 transition-colors text-sm">
+              <Shield size={14} />
+              <span>پنل مدیریت</span>
+            </Link>
             <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-8 opacity-60 hover:opacity-100 transition-opacity" />
             <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="Mastercard" className="h-8 opacity-60 hover:opacity-100 transition-opacity" />
           </div>
