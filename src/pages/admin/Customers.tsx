@@ -2,6 +2,15 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Eye, Mail, Phone, ShoppingBag, MapPin, Download } from 'lucide-react';
 
+// Helper function to create avatar placeholder
+const createAvatar = (name: string, color: string): string => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="${color}"/>
+    <text x="50" y="60" font-family="Arial" font-size="36" fill="white" text-anchor="middle" font-weight="bold">${name.charAt(0)}</text>
+  </svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
 interface Customer {
   id: number;
   name: string;
@@ -25,7 +34,7 @@ const customers: Customer[] = [
     orders: 12,
     totalSpent: 85000000,
     joinDate: '۱۴۰۳/۰۶/۱۵',
-    avatar: 'https://i.pravatar.cc/100?img=1',
+    avatar: createAvatar('سارا', '#D4AF37'),
     status: 'active',
   },
   {
@@ -37,7 +46,7 @@ const customers: Customer[] = [
     orders: 8,
     totalSpent: 125000000,
     joinDate: '۱۴۰۳/۰۷/۲۰',
-    avatar: 'https://i.pravatar.cc/100?img=3',
+    avatar: createAvatar('محمد', '#C0C0C0'),
     status: 'active',
   },
   {
@@ -49,7 +58,7 @@ const customers: Customer[] = [
     orders: 15,
     totalSpent: 92000000,
     joinDate: '۱۴۰۳/۰۴/۱۰',
-    avatar: 'https://i.pravatar.cc/100?img=5',
+    avatar: createAvatar('نیلوفر', '#B76E79'),
     status: 'active',
   },
   {
@@ -61,7 +70,7 @@ const customers: Customer[] = [
     orders: 5,
     totalSpent: 45000000,
     joinDate: '۱۴۰۳/۰۹/۰۵',
-    avatar: 'https://i.pravatar.cc/100?img=7',
+    avatar: createAvatar('علی', '#4A5568'),
     status: 'active',
   },
   {
@@ -73,7 +82,7 @@ const customers: Customer[] = [
     orders: 3,
     totalSpent: 28000000,
     joinDate: '۱۴۰۳/۱۱/۱۸',
-    avatar: 'https://i.pravatar.cc/100?img=9',
+    avatar: createAvatar('فاطمه', '#8B7355'),
     status: 'inactive',
   },
   {
@@ -85,7 +94,7 @@ const customers: Customer[] = [
     orders: 7,
     totalSpent: 67000000,
     joinDate: '۱۴۰۳/۰۸/۲۲',
-    avatar: 'https://i.pravatar.cc/100?img=11',
+    avatar: createAvatar('رضا', '#2D3748'),
     status: 'active',
   },
 ];

@@ -1,12 +1,21 @@
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 
+// Helper function to create avatar placeholder
+const createAvatar = (name: string, color: string): string => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="${color}"/>
+    <text x="50" y="60" font-family="Arial" font-size="36" fill="white" text-anchor="middle" font-weight="bold">${name.charAt(0)}</text>
+  </svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
 const testimonials = [
   {
     id: 1,
     name: 'سارا احمدی',
     role: 'مشتری وفادار',
-    avatar: 'https://i.pravatar.cc/100?img=1',
+    avatar: createAvatar('سارا', '#D4AF37'),
     rating: 5,
     text: 'کیفیت محصولات فوق‌العاده است. گردنبندی که خریدم دقیقاً مطابق با عکس بود و بسته‌بندی بسیار لوکس و حرفه‌ای بود.',
   },
@@ -14,7 +23,7 @@ const testimonials = [
     id: 2,
     name: 'محمد رضایی',
     role: 'خریدار جدید',
-    avatar: 'https://i.pravatar.cc/100?img=3',
+    avatar: createAvatar('محمد', '#C0C0C0'),
     rating: 5,
     text: 'ارسال سریع و پشتیبانی عالی. ساعتی که سفارش دادم دقیقاً مطابق توضیحات بود. قطعاً دوباره خرید خواهم کرد.',
   },
@@ -22,7 +31,7 @@ const testimonials = [
     id: 3,
     name: 'نیلوفر کریمی',
     role: 'طراح مد',
-    avatar: 'https://i.pravatar.cc/100?img=5',
+    avatar: createAvatar('نیلوفر', '#B76E79'),
     rating: 5,
     text: 'به عنوان یک طراح مد، همیشه به دنبال اکسسوری‌های خاص و باکیفیت هستم. این فروشگاه بهترین انتخاب من است.',
   },

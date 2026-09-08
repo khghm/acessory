@@ -2,6 +2,15 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Edit2, Trash2, Mail, Phone, Shield, User, Eye } from 'lucide-react';
 
+// Helper function to create avatar placeholder
+const createAvatar = (name: string, color: string): string => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="${color}"/>
+    <text x="50" y="60" font-family="Arial" font-size="36" fill="white" text-anchor="middle" font-weight="bold">${name.charAt(0)}</text>
+  </svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
 interface Employee {
   id: number;
   name: string;
@@ -16,12 +25,12 @@ interface Employee {
 }
 
 const employees: Employee[] = [
-  { id: 1, name: 'علی رضایی', email: 'ali@luxe.com', phone: '09121234567', role: 'مدیر فروش', department: 'فروش', joinDate: '۱۴۰۲/۰۳/۱۵', salary: 25000000, avatar: 'https://i.pravatar.cc/100?img=12', status: 'active' },
-  { id: 2, name: 'مریم احمدی', email: 'maryam@luxe.com', phone: '09131234567', role: 'کارشناس پشتیبانی', department: 'پشتیبانی', joinDate: '۱۴۰۲/۰۶/۲۰', salary: 15000000, avatar: 'https://i.pravatar.cc/100?img=5', status: 'active' },
-  { id: 3, name: 'حسین محمدی', email: 'hossein@luxe.com', phone: '09141234567', role: 'انباردار', department: 'انبار', joinDate: '۱۴۰۲/۰۹/۱۰', salary: 12000000, avatar: 'https://i.pravatar.cc/100?img=13', status: 'active' },
-  { id: 4, name: 'زهرا کریمی', email: 'zahra@luxe.com', phone: '09151234567', role: 'حسابدار', department: 'مالی', joinDate: '۱۴۰۳/۰۱/۰۵', salary: 18000000, avatar: 'https://i.pravatar.cc/100?img=9', status: 'active' },
-  { id: 5, name: 'رضا نوری', email: 'reza@luxe.com', phone: '09161234567', role: 'کارشناس دیجیتال مارکتینگ', department: 'بازاریابی', joinDate: '۱۴۰۳/۰۴/۱۸', salary: 20000000, avatar: 'https://i.pravatar.cc/100?img=15', status: 'active' },
-  { id: 6, name: 'فاطمه حسینی', email: 'fatemeh@luxe.com', phone: '09171234567', role: 'طراح گرافیک', department: 'بازاریابی', joinDate: '۱۴۰۳/۰۷/۲۲', salary: 16000000, avatar: 'https://i.pravatar.cc/100?img=16', status: 'inactive' },
+  { id: 1, name: 'علی رضایی', email: 'ali@luxe.com', phone: '09121234567', role: 'مدیر فروش', department: 'فروش', joinDate: '۱۴۰۲/۰۳/۱۵', salary: 25000000, avatar: createAvatar('علی', '#D4AF37'), status: 'active' },
+  { id: 2, name: 'مریم احمدی', email: 'maryam@luxe.com', phone: '09131234567', role: 'کارشناس پشتیبانی', department: 'پشتیبانی', joinDate: '۱۴۰۲/۰۶/۲۰', salary: 15000000, avatar: createAvatar('مریم', '#B76E79'), status: 'active' },
+  { id: 3, name: 'حسین محمدی', email: 'hossein@luxe.com', phone: '09141234567', role: 'انباردار', department: 'انبار', joinDate: '۱۴۰۲/۰۹/۱۰', salary: 12000000, avatar: createAvatar('حسین', '#4A5568'), status: 'active' },
+  { id: 4, name: 'زهرا کریمی', email: 'zahra@luxe.com', phone: '09151234567', role: 'حسابدار', department: 'مالی', joinDate: '۱۴۰۳/۰۱/۰۵', salary: 18000000, avatar: createAvatar('زهرا', '#8B7355'), status: 'active' },
+  { id: 5, name: 'رضا نوری', email: 'reza@luxe.com', phone: '09161234567', role: 'کارشناس دیجیتال مارکتینگ', department: 'بازاریابی', joinDate: '۱۴۰۳/۰۴/۱۸', salary: 20000000, avatar: createAvatar('رضا', '#2D3748'), status: 'active' },
+  { id: 6, name: 'فاطمه حسینی', email: 'fatemeh@luxe.com', phone: '09171234567', role: 'طراح گرافیک', department: 'بازاریابی', joinDate: '۱۴۰۳/۰۷/۲۲', salary: 16000000, avatar: createAvatar('فاطمه', '#C0C0C0'), status: 'inactive' },
 ];
 
 export default function AdminEmployees() {

@@ -23,150 +23,79 @@ export interface Category {
   description: string;
 }
 
-// Helper function to get product image based on category and ID
-const getProductImage = (category: string, id: number): string => {
-  const imageMap: Record<string, string[]> = {
-    'necklace': [
-      'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&h=500&fit=crop',
-    ],
-    'bracelet': [
-      'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1609794951268-d13e86a0ed41?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&h=500&fit=crop',
-    ],
-    'earring': [
-      'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1588444837495-c6cfeb53f32d?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1561172497-0c3b5d532c1b?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1589128777073-263566ae5e4d?w=500&h=500&fit=crop',
-    ],
-    'ring': [
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=500&h=500&fit=crop',
-    ],
-    'watch': [
-      'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=500&h=500&fit=crop',
-    ],
-    'brooch': [
-      'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=500&h=500&fit=crop',
-    ],
-    'hair-clip': [
-      'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&h=500&fit=crop',
-    ],
-    'tiara': [
-      'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop',
-    ],
-    'bangle': [
-      'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=500&h=500&fit=crop',
-    ],
-    'anklet': [
-      'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=500&h=500&fit=crop',
-    ],
-    'cufflinks': [
-      'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=500&h=500&fit=crop',
-    ],
-    'tie': [
-      'https://images.unsplash.com/photo-1606293926249-ed22a12cd2b5?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1606293926249-ed22a12cd2b5?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1606293926249-ed22a12cd2b5?w=500&h=500&fit=crop',
-    ],
-    'belt': [
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop',
-    ],
-    'wallet': [
-      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&h=500&fit=crop',
-    ],
-    'keychain': [
-      'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500&h=500&fit=crop',
-    ],
-    'sunglasses': [
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=500&fit=crop',
-    ],
-    'scarf': [
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=500&fit=crop',
-    ],
-    'gloves': [
-      'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&h=500&fit=crop',
-    ],
-    'hat': [
-      'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=500&h=500&fit=crop',
-    ],
-    'perfume': [
-      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop',
-      'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&h=500&fit=crop',
-    ],
+// Helper function to create SVG placeholder images
+const createPlaceholderImage = (category: string, id: number): string => {
+  const colors: Record<string, { bg: string; accent: string }> = {
+    'necklace': { bg: '#1a1a2e', accent: '#D4AF37' },
+    'bracelet': { bg: '#16213e', accent: '#C0C0C0' },
+    'earring': { bg: '#0f3460', accent: '#FFD700' },
+    'ring': { bg: '#1a1a2e', accent: '#B76E79' },
+    'watch': { bg: '#16213e', accent: '#D4AF37' },
+    'brooch': { bg: '#0f3460', accent: '#C0C0C0' },
+    'hair-clip': { bg: '#1a1a2e', accent: '#FFD700' },
+    'tiara': { bg: '#16213e', accent: '#B76E79' },
+    'bangle': { bg: '#0f3460', accent: '#D4AF37' },
+    'anklet': { bg: '#1a1a2e', accent: '#C0C0C0' },
+    'cufflinks': { bg: '#16213e', accent: '#FFD700' },
+    'tie': { bg: '#0f3460', accent: '#B76E79' },
+    'belt': { bg: '#1a1a2e', accent: '#D4AF37' },
+    'wallet': { bg: '#16213e', accent: '#C0C0C0' },
+    'keychain': { bg: '#0f3460', accent: '#FFD700' },
+    'sunglasses': { bg: '#1a1a2e', accent: '#B76E79' },
+    'scarf': { bg: '#16213e', accent: '#D4AF37' },
+    'gloves': { bg: '#0f3460', accent: '#C0C0C0' },
+    'hat': { bg: '#1a1a2e', accent: '#FFD700' },
+    'perfume': { bg: '#16213e', accent: '#B76E79' },
   };
 
-  const categoryImages = imageMap[category] || imageMap['necklace'];
-  return categoryImages[id % categoryImages.length];
+  const color = colors[category] || colors['necklace'];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+    <defs>
+      <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:${color.bg};stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+      </linearGradient>
+      <radialGradient id="glow${id}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:${color.accent};stop-opacity:0.3" />
+        <stop offset="100%" style="stop-color:${color.accent};stop-opacity:0" />
+      </radialGradient>
+    </defs>
+    <rect width="500" height="500" fill="url(#bg${id})"/>
+    <circle cx="250" cy="250" r="200" fill="url(#glow${id})"/>
+    <circle cx="250" cy="250" r="80" fill="none" stroke="${color.accent}" stroke-width="2" opacity="0.6"/>
+    <circle cx="250" cy="250" r="60" fill="${color.accent}" opacity="0.2"/>
+    <text x="250" y="260" font-family="Arial" font-size="24" fill="${color.accent}" text-anchor="middle" opacity="0.8">${category.toUpperCase()}</text>
+  </svg>`;
+  
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
+// Helper function to get product image based on category and ID
+const getProductImage = (category: string, id: number): string => {
+  return createPlaceholderImage(category, id);
 };
 
 export const categories: Category[] = [
-  { id: 'necklace', name: 'گردنبند', nameEn: 'Necklace', image: 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=400&h=400&fit=crop', count: 5, description: 'مجموعه‌ای از گردنبندهای لوکس' },
-  { id: 'bracelet', name: 'دستبند', nameEn: 'Bracelet', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop', count: 5, description: 'دستبندهای ظریف و شیک' },
-  { id: 'earring', name: 'گوشواره', nameEn: 'Earring', image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop', count: 5, description: 'گوشواره‌های متنوع و زیبا' },
-  { id: 'ring', name: 'انگشتر', nameEn: 'Ring', image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop', count: 4, description: 'انگشترهای لوکس و خاص' },
-  { id: 'watch', name: 'ساعت مچی', nameEn: 'Watch', image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop', count: 4, description: 'ساعت‌های مچی کلاسیک و مدرن' },
-  { id: 'brooch', name: 'سنجاق سینه', nameEn: 'Brooch', image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop', count: 3, description: 'سنجاق‌های سینه لوکس' },
-  { id: 'hair-clip', name: 'گیره مو', nameEn: 'Hair Clip', image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop', count: 4, description: 'گیره‌های مو شیک' },
-  { id: 'tiara', name: 'تاج و تل سر', nameEn: 'Tiara', image: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=400&fit=crop', count: 3, description: 'تاج‌ها و تل‌های مجلسی' },
-  { id: 'bangle', name: 'النگو', nameEn: 'Bangle', image: 'https://images.unsplash.com/photo-1573408301183-5f62b16f4f45?w=400&h=400&fit=crop', count: 4, description: 'النگوهای طلا و نقره' },
-  { id: 'anklet', name: 'پابند', nameEn: 'Anklet', image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop', count: 3, description: 'پابندهای ظریف' },
-  { id: 'cufflinks', name: 'دکمه سردست', nameEn: 'Cufflinks', image: 'https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&h=400&fit=crop', count: 3, description: 'دکمه‌های سردست مردانه' },
-  { id: 'tie', name: 'کراوات', nameEn: 'Tie', image: 'https://images.unsplash.com/photo-1606293926249-ed22a12cd2b5?w=400&h=400&fit=crop', count: 3, description: 'کراوات‌های لوکس' },
-  { id: 'belt', name: 'کمربند', nameEn: 'Belt', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop', count: 3, description: 'کمربندهای چرم لوکس' },
-  { id: 'wallet', name: 'کیف پول', nameEn: 'Wallet', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop', count: 4, description: 'کیف پول‌های چرم' },
-  { id: 'keychain', name: 'جاکلیدی', nameEn: 'Keychain', image: 'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400&h=400&fit=crop', count: 3, description: 'جاکلیدی‌های لوکس' },
-  { id: 'sunglasses', name: 'عینک آفتابی', nameEn: 'Sunglasses', image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&h=400&fit=crop', count: 4, description: 'عینک‌های آفتابی برند' },
-  { id: 'scarf', name: 'شال و روسری', nameEn: 'Scarf', image: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400&h=400&fit=crop', count: 4, description: 'شال‌ها و روسری‌های ابریشمی' },
-  { id: 'gloves', name: 'دستکش', nameEn: 'Gloves', image: 'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=400&h=400&fit=crop', count: 3, description: 'دستکش‌های چرم لوکس' },
-  { id: 'hat', name: 'کلاه', nameEn: 'Hat', image: 'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=400&fit=crop', count: 3, description: 'کلاه‌های شیک و مدرن' },
-  { id: 'perfume', name: 'عطر', nameEn: 'Perfume', image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop', count: 4, description: 'عطرهای لوکس و خاص' },
+  { id: 'necklace', name: 'گردنبند', nameEn: 'Necklace', image: createPlaceholderImage('necklace', 100), count: 5, description: 'مجموعه‌ای از گردنبندهای لوکس' },
+  { id: 'bracelet', name: 'دستبند', nameEn: 'Bracelet', image: createPlaceholderImage('bracelet', 101), count: 5, description: 'دستبندهای ظریف و شیک' },
+  { id: 'earring', name: 'گوشواره', nameEn: 'Earring', image: createPlaceholderImage('earring', 102), count: 5, description: 'گوشواره‌های متنوع و زیبا' },
+  { id: 'ring', name: 'انگشتر', nameEn: 'Ring', image: createPlaceholderImage('ring', 103), count: 4, description: 'انگشترهای لوکس و خاص' },
+  { id: 'watch', name: 'ساعت مچی', nameEn: 'Watch', image: createPlaceholderImage('watch', 104), count: 4, description: 'ساعت‌های مچی کلاسیک و مدرن' },
+  { id: 'brooch', name: 'سنجاق سینه', nameEn: 'Brooch', image: createPlaceholderImage('brooch', 105), count: 3, description: 'سنجاق‌های سینه لوکس' },
+  { id: 'hair-clip', name: 'گیره مو', nameEn: 'Hair Clip', image: createPlaceholderImage('hair-clip', 106), count: 4, description: 'گیره‌های مو شیک' },
+  { id: 'tiara', name: 'تاج و تل سر', nameEn: 'Tiara', image: createPlaceholderImage('tiara', 107), count: 3, description: 'تاج‌ها و تل‌های مجلسی' },
+  { id: 'bangle', name: 'النگو', nameEn: 'Bangle', image: createPlaceholderImage('bangle', 108), count: 4, description: 'النگوهای طلا و نقره' },
+  { id: 'anklet', name: 'پابند', nameEn: 'Anklet', image: createPlaceholderImage('anklet', 109), count: 3, description: 'پابندهای ظریف' },
+  { id: 'cufflinks', name: 'دکمه سردست', nameEn: 'Cufflinks', image: createPlaceholderImage('cufflinks', 110), count: 3, description: 'دکمه‌های سردست مردانه' },
+  { id: 'tie', name: 'کراوات', nameEn: 'Tie', image: createPlaceholderImage('tie', 111), count: 3, description: 'کراوات‌های لوکس' },
+  { id: 'belt', name: 'کمربند', nameEn: 'Belt', image: createPlaceholderImage('belt', 112), count: 3, description: 'کمربندهای چرم لوکس' },
+  { id: 'wallet', name: 'کیف پول', nameEn: 'Wallet', image: createPlaceholderImage('wallet', 113), count: 4, description: 'کیف پول‌های چرم' },
+  { id: 'keychain', name: 'جاکلیدی', nameEn: 'Keychain', image: createPlaceholderImage('keychain', 114), count: 3, description: 'جاکلیدی‌های لوکس' },
+  { id: 'sunglasses', name: 'عینک آفتابی', nameEn: 'Sunglasses', image: createPlaceholderImage('sunglasses', 115), count: 4, description: 'عینک‌های آفتابی برند' },
+  { id: 'scarf', name: 'شال و روسری', nameEn: 'Scarf', image: createPlaceholderImage('scarf', 116), count: 4, description: 'شال‌ها و روسری‌های ابریشمی' },
+  { id: 'gloves', name: 'دستکش', nameEn: 'Gloves', image: createPlaceholderImage('gloves', 117), count: 3, description: 'دستکش‌های چرم لوکس' },
+  { id: 'hat', name: 'کلاه', nameEn: 'Hat', image: createPlaceholderImage('hat', 118), count: 3, description: 'کلاه‌های شیک و مدرن' },
+  { id: 'perfume', name: 'عطر', nameEn: 'Perfume', image: createPlaceholderImage('perfume', 119), count: 4, description: 'عطرهای لوکس و خاص' },
 ];
 
 export const products: Product[] = [

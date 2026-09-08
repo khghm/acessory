@@ -107,12 +107,12 @@ export default function Hero() {
               <div className="absolute inset-4 border border-gold-400/10 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
               
               {/* Main image */}
-              <div className="absolute inset-8 rounded-full overflow-hidden border-4 border-gold-500/30 shadow-2xl shadow-gold-500/20">
-                <img
-                  src="https://image.qwenlm.ai/generated-images/5d7fc761-e093-41ef-af84-bd308ffaa991/_result.png"
-                  alt="Luxury Accessories"
-                  className="w-full h-full object-cover"
-                />
+              <div className="absolute inset-8 rounded-full overflow-hidden border-4 border-gold-500/30 shadow-2xl shadow-gold-500/20 bg-gradient-to-br from-dark-800 to-dark-900 flex items-center justify-center">
+                <div className="text-center">
+                  <Diamond className="text-gold-400 mx-auto mb-4" size={80} />
+                  <p className="text-gold-400 text-xl font-playfair font-bold">LUXE</p>
+                  <p className="text-gold-400/60 text-sm tracking-widest">ACCESSORIES</p>
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-dark-900/50 to-transparent"></div>
               </div>
 

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Instagram, Send, Shield } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, Send, Shield, CreditCard } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -88,8 +88,10 @@ export default function Footer() {
               <Shield size={14} />
               <span>پنل مدیریت</span>
             </Link>
-            <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-8 opacity-60 hover:opacity-100 transition-opacity" />
-            <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="Mastercard" className="h-8 opacity-60 hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-2 px-3 py-1 bg-dark-700 rounded-lg">
+              <CreditCard size={20} className="text-dark-300" />
+              <span className="text-xs text-dark-400">پرداخت امن</span>
+            </div>
           </div>
         </div>
       </div>
