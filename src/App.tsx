@@ -19,6 +19,11 @@ import AdminOrders from './pages/admin/Orders';
 import AdminCustomers from './pages/admin/Customers';
 import AdminAnalytics from './pages/admin/Analytics';
 import AdminSettings from './pages/admin/Settings';
+import AdminInventory from './pages/admin/Inventory';
+import AdminAccounting from './pages/admin/Accounting';
+import AdminCoupons from './pages/admin/Coupons';
+import AdminEmployees from './pages/admin/Employees';
+import AdminSupport from './pages/admin/Support';
 import { products, Product } from './data/products';
 import type { CartItem } from './components/CartSidebar';
 
@@ -165,6 +170,11 @@ function AdminLayout() {
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="customers" element={<AdminCustomers />} />
+            <Route path="inventory" element={<AdminInventory />} />
+            <Route path="accounting" element={<AdminAccounting />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="employees" element={<AdminEmployees />} />
+            <Route path="support" element={<AdminSupport />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
           </Routes>

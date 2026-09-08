@@ -27,18 +27,18 @@ export default function Categories({ selectedCategory, onCategoryChange }: Categ
         </motion.div>
 
         {/* Categories grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {categories.map((category, index) => (
             <motion.button
               key={category.id}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.03 }}
               onClick={() => onCategoryChange(category.id)}
               className={`group relative overflow-hidden rounded-2xl aspect-square ${
                 selectedCategory === category.id
-                  ? 'ring-2 ring-gold-500'
+                  ? 'ring-2 ring-gold-500 shadow-lg shadow-gold-500/20'
                   : ''
               }`}
             >
@@ -50,11 +50,11 @@ export default function Categories({ selectedCategory, onCategoryChange }: Categ
               />
               
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/90 via-dark-900/50 to-transparent group-hover:from-dark-900/95 transition-all"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-900/95 via-dark-900/60 to-transparent group-hover:from-dark-900/90 transition-all"></div>
 
               {/* Content */}
-              <div className="relative h-full flex flex-col items-center justify-center p-3">
-                <h3 className="text-dark-100 font-medium text-sm lg:text-base text-center mb-1">
+              <div className="relative h-full flex flex-col items-center justify-end p-4">
+                <h3 className="text-dark-100 font-medium text-sm lg:text-base text-center mb-1 group-hover:text-gold-400 transition-colors">
                   {category.name}
                 </h3>
                 <p className="text-dark-400 text-xs">
