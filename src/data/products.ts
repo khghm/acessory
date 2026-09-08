@@ -49,6 +49,7 @@ const createPlaceholderImage = (category: string, id: number): string => {
   };
 
   const color = colors[category] || colors['necklace'];
+  // Use encodeURIComponent instead of btoa for better compatibility
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
     <defs>
       <linearGradient id="bg${id}" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -67,7 +68,7 @@ const createPlaceholderImage = (category: string, id: number): string => {
     <text x="250" y="260" font-family="Arial" font-size="24" fill="${color.accent}" text-anchor="middle" opacity="0.8">${category.toUpperCase()}</text>
   </svg>`;
   
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };
 
 // Helper function to get product image based on category and ID

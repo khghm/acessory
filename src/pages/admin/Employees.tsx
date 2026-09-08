@@ -17,11 +17,12 @@ interface Employee {
 
 // Helper function to create avatar placeholder
 const createAvatar = (name: string, color: string): string => {
+  const initial = name.charAt(0);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
     <rect width="100" height="100" fill="${color}"/>
-    <text x="50" y="60" font-family="Arial" font-size="36" fill="white" text-anchor="middle" font-weight="bold">${name.charAt(0)}</text>
+    <text x="50" y="62" font-family="Arial" font-size="36" fill="white" text-anchor="middle" font-weight="bold">${initial}</text>
   </svg>`;
-  return `image/svg+xml;base64,${btoa(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };
 
 const initialEmployees: Employee[] = [
