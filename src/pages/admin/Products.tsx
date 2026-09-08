@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Search, Filter, Eye, Upload, X, Image as ImageIcon } from 'lucide-react';
-import { products as initialProducts, Product } from '../../data/products';
+import { Plus, Edit2, Trash2, Search, Filter, Eye, Upload, X, Image as ImageIcon, Download } from 'lucide-react';
+import { products as initialProducts, Product, categories } from '../../data/products';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -126,21 +126,63 @@ export default function AdminProducts() {
     return new Intl.NumberFormat('fa-IR').format(price);
   };
 
+  // Download CSV function
+  const downloadProductsCSV = () => {
+    const headers = ['نام فارسی', 'نام انگلیسی', 'قیمت', 'قیمت قبل از تخفیف', 'دسته‌بندی', 'امتیاز', 'تعداد نظرات', 'برچسب', 'موجودی', 'توضیحات'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredProducts.map(product => {
+        const categoryName = categories.find(c => c.id === product.category)?.name || product.category;
+        return [
+          product.name,
+          product.nameEn,
+          product.price,
+          product.originalPrice || '',
+          categoryName,
+          product.rating,
+          product.reviews,
+          product.badge || '',
+          product.inStock ? 'موجود' : 'ناموجود',
+          product.description.replace(/,/g, '،')
+        ].join(',');
+      })
+    ].join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'products-report.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-dark-100">محصولات</h1>
           <p className="text-dark-400 mt-1">مدیریت محصولات فروشگاه</p>
         </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-5 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
-        >
-          <Plus size={18} />
-          <span>افزودن محصول</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={downloadProductsCSV}
+            className="flex items-center gap-2 bg-dark-700 text-dark-200 px-4 py-2.5 rounded-xl hover:bg-dark-600 transition-colors"
+          >
+            <Download size={16} />
+            <span>دانلود گزارش</span>
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-5 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
+          >
+            <Plus size={18} />
+            <span>افزودن محصول</span>
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
