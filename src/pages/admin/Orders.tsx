@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Eye, Package, Truck, CheckCircle, Clock, XCircle, X } from 'lucide-react';
+import { Search, Filter, Eye, Package, Truck, CheckCircle, Clock, XCircle, X, Download } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -112,12 +112,49 @@ export default function AdminOrders() {
 
   const formatPrice = (price: number) => new Intl.NumberFormat('fa-IR').format(price);
 
+  // Download CSV function
+  const downloadOrdersCSV = () => {
+    const headers = ['شماره سفارش', 'مشتری', 'ایمیل', 'تلفن', 'تاریخ', 'مبلغ', 'وضعیت', 'آدرس'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredOrders.map(order => [
+        order.id,
+        order.customer,
+        order.email,
+        order.phone,
+        order.date,
+        order.total,
+        statusConfig[order.status].label,
+        order.address
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'orders-report.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-dark-100">سفارشات</h1>
-        <p className="text-dark-400 mt-1">مدیریت و پیگیری سفارشات</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-dark-100">سفارشات</h1>
+          <p className="text-dark-400 mt-1">مدیریت و پیگیری سفارشات</p>
+        </div>
+        <button
+          onClick={downloadOrdersCSV}
+          className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
+        >
+          <Download size={16} />
+          <span>دانلود گزارش</span>
+        </button>
       </div>
 
       {/* Stats */}

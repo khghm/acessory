@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit2, Trash2, Search, Filter, Eye, MoreVertical } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Filter, Eye, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { products as initialProducts, Product } from '../../data/products';
 
 export default function AdminProducts() {
@@ -9,6 +9,21 @@ export default function AdminProducts() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    nameEn: '',
+    price: '',
+    originalPrice: '',
+    category: 'necklace',
+    description: '',
+    image: '',
+    rating: 4.5,
+    reviews: 0,
+    badge: '',
+    inStock: true,
+    colors: ['#FFD700'],
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name.includes(searchQuery) || p.nameEn.toLowerCase().includes(searchQuery.toLowerCase());
@@ -18,6 +33,93 @@ export default function AdminProducts() {
 
   const handleDelete = (id: number) => {
     setProducts(products.filter((p) => p.id !== id));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, image: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddProduct = () => {
+    const newProduct: Product = {
+      id: Math.max(...products.map(p => p.id)) + 1,
+      name: formData.name,
+      nameEn: formData.nameEn,
+      price: Number(formData.price),
+      originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
+      category: formData.category,
+      image: formData.image,
+      rating: formData.rating,
+      reviews: formData.reviews,
+      badge: formData.badge || undefined,
+      description: formData.description,
+      colors: formData.colors,
+      inStock: formData.inStock,
+    };
+    setProducts([...products, newProduct]);
+    setShowAddModal(false);
+    resetForm();
+  };
+
+  const handleUpdateProduct = () => {
+    if (editingProduct) {
+      const updatedProduct: Product = {
+        ...editingProduct,
+        name: formData.name,
+        nameEn: formData.nameEn,
+        price: Number(formData.price),
+        originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
+        category: formData.category,
+        image: formData.image,
+        description: formData.description,
+        badge: formData.badge || undefined,
+        inStock: formData.inStock,
+      };
+      setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
+      setEditingProduct(null);
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      nameEn: '',
+      price: '',
+      originalPrice: '',
+      category: 'necklace',
+      description: '',
+      image: '',
+      rating: 4.5,
+      reviews: 0,
+      badge: '',
+      inStock: true,
+      colors: ['#FFD700'],
+    });
+  };
+
+  const openEditModal = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      nameEn: product.nameEn,
+      price: product.price.toString(),
+      originalPrice: product.originalPrice?.toString() || '',
+      category: product.category,
+      description: product.description,
+      image: product.image,
+      rating: product.rating,
+      reviews: product.reviews,
+      badge: product.badge || '',
+      inStock: product.inStock,
+      colors: product.colors,
+    });
   };
 
   const formatPrice = (price: number) => {
@@ -140,7 +242,7 @@ export default function AdminProducts() {
                         <Eye size={16} />
                       </button>
                       <button 
-                        onClick={() => setEditingProduct(product)}
+                        onClick={() => openEditModal(product)}
                         className="p-2 text-dark-400 hover:text-gold-400 transition-colors"
                       >
                         <Edit2 size={16} />
@@ -168,64 +270,192 @@ export default function AdminProducts() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => { setShowAddModal(false); setEditingProduct(null); }}
+            onClick={() => { setShowAddModal(false); setEditingProduct(null); resetForm(); }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-dark-800 border border-dark-700 rounded-2xl p-6 w-full max-w-lg"
+              className="bg-dark-800 border border-dark-700 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold text-dark-100 mb-6">
-                {editingProduct ? 'ویرایش محصول' : 'افزودن محصول جدید'}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-dark-100">
+                  {editingProduct ? 'ویرایش محصول' : 'افزودن محصول جدید'}
+                </h3>
+                <button
+                  onClick={() => { setShowAddModal(false); setEditingProduct(null); resetForm(); }}
+                  className="text-dark-400 hover:text-dark-200 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
               <div className="space-y-4">
+                {/* Image Upload */}
                 <div>
-                  <label className="text-sm text-dark-300 mb-1 block">نام محصول</label>
-                  <input
-                    type="text"
-                    defaultValue={editingProduct?.name || ''}
-                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
-                  />
+                  <label className="text-sm text-dark-300 mb-2 block">تصویر محصول</label>
+                  <div className="border-2 border-dashed border-dark-600 rounded-xl p-6 text-center hover:border-gold-500/50 transition-colors">
+                    {formData.image ? (
+                      <div className="relative inline-block">
+                        <img
+                          src={formData.image}
+                          alt="Preview"
+                          className="max-w-full max-h-48 rounded-lg object-contain"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: '' })}
+                          className="absolute top-2 left-2 w-8 h-8 bg-red-500/90 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <ImageIcon className="mx-auto text-dark-500 mb-3" size={48} />
+                        <p className="text-dark-400 text-sm mb-2">تصویر محصول را انتخاب کنید</p>
+                        <p className="text-dark-500 text-xs mb-4">PNG, JPG, WEBP (حداکثر 5MB)</p>
+                      </div>
+                    )}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="mt-3 flex items-center gap-2 mx-auto bg-dark-700 text-dark-200 px-4 py-2 rounded-xl hover:bg-dark-600 transition-colors"
+                    >
+                      <Upload size={16} />
+                      <span>{formData.image ? 'تغییر تصویر' : 'انتخاب تصویر'}</span>
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm text-dark-300 mb-1 block">قیمت (تومان)</label>
-                  <input
-                    type="number"
-                    defaultValue={editingProduct?.price || ''}
-                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
-                  />
+
+                {/* Name fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">نام فارسی</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                      placeholder="مثال: گردنبند الماس"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">نام انگلیسی</label>
+                    <input
+                      type="text"
+                      value={formData.nameEn}
+                      onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                      dir="ltr"
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                      placeholder="Example: Diamond Necklace"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm text-dark-300 mb-1 block">دسته‌بندی</label>
-                  <select className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors">
-                    <option value="necklace">گردنبند</option>
-                    <option value="bracelet">دستبند</option>
-                    <option value="earring">گوشواره</option>
-                    <option value="ring">انگشتر</option>
-                    <option value="watch">ساعت</option>
-                  </select>
+
+                {/* Price fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">قیمت (تومان)</label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                      placeholder="10000000"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">قیمت قبل از تخفیف (اختیاری)</label>
+                    <input
+                      type="number"
+                      value={formData.originalPrice}
+                      onChange={(e) => setFormData({ ...formData, originalPrice: e.target.value })}
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                      placeholder="12000000"
+                    />
+                  </div>
                 </div>
+
+                {/* Category and Badge */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">دسته‌بندی</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                    >
+                      <option value="necklace">گردنبند</option>
+                      <option value="bracelet">دستبند</option>
+                      <option value="earring">گوشواره</option>
+                      <option value="ring">انگشتر</option>
+                      <option value="watch">ساعت</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm text-dark-300 mb-1 block">برچسب (اختیاری)</label>
+                    <select
+                      value={formData.badge}
+                      onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                      className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                    >
+                      <option value="">بدون برچسب</option>
+                      <option value="جدید">جدید</option>
+                      <option value="تخفیف">تخفیف</option>
+                      <option value="پرفروش">پرفروش</option>
+                      <option value="ویژه">ویژه</option>
+                      <option value="لوکس">لوکس</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Description */}
                 <div>
                   <label className="text-sm text-dark-300 mb-1 block">توضیحات</label>
                   <textarea
-                    rows={3}
-                    defaultValue={editingProduct?.description || ''}
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors resize-none"
+                    placeholder="توضیحات محصول را وارد کنید..."
                   />
                 </div>
+
+                {/* Stock status */}
+                <div className="flex items-center gap-3">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.inStock}
+                      onChange={(e) => setFormData({ ...formData, inStock: e.target.checked })}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-dark-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-dark-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                  </label>
+                  <span className="text-sm text-dark-300">موجود در انبار</span>
+                </div>
               </div>
+
               <div className="flex items-center gap-3 mt-6">
                 <button
-                  onClick={() => { setShowAddModal(false); setEditingProduct(null); }}
+                  onClick={() => { setShowAddModal(false); setEditingProduct(null); resetForm(); }}
                   className="flex-1 bg-dark-700 text-dark-200 px-4 py-2.5 rounded-xl hover:bg-dark-600 transition-colors"
                 >
                   انصراف
                 </button>
                 <button
-                  onClick={() => { setShowAddModal(false); setEditingProduct(null); }}
-                  className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
+                  onClick={editingProduct ? handleUpdateProduct : handleAddProduct}
+                  disabled={!formData.name || !formData.price || !formData.image}
+                  className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {editingProduct ? 'ذخیره تغییرات' : 'افزودن محصول'}
                 </button>

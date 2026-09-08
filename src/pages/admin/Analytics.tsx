@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, DollarSign, ShoppingCart, Users, ArrowUpRight } from 'lucide-react';
+import { TrendingUp, DollarSign, ShoppingCart, Users, ArrowUpRight, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
 const monthlyData = [
@@ -46,12 +46,81 @@ const weeklyData = [
 export default function AdminAnalytics() {
   const formatPrice = (price: number) => new Intl.NumberFormat('fa-IR').format(price);
 
+  // Download CSV function
+  const downloadCSV = (data: any[], filename: string) => {
+    if (!data.length) return;
+    
+    const headers = Object.keys(data[0]);
+    const csvContent = [
+      headers.join(','),
+      ...data.map(row => headers.map(header => {
+        const value = row[header];
+        // Escape quotes and wrap in quotes if contains comma
+        const escaped = String(value).replace(/"/g, '""');
+        return escaped.includes(',') ? `"${escaped}"` : escaped;
+      }).join(','))
+    ].join('\n');
+
+    // Add BOM for proper UTF-8 encoding in Excel
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${filename}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Download functions for different reports
+  const downloadMonthlyReport = () => {
+    downloadCSV(monthlyData, 'monthly-sales-report');
+  };
+
+  const downloadCategoryReport = () => {
+    downloadCSV(categorySales, 'category-sales-report');
+  };
+
+  const downloadTopProductsReport = () => {
+    downloadCSV(topProducts, 'top-products-report');
+  };
+
+  const downloadAllReports = () => {
+    downloadMonthlyReport();
+    setTimeout(() => downloadCategoryReport(), 500);
+    setTimeout(() => downloadTopProductsReport(), 1000);
+  };
+
+  // Print report function
+  const printReport = () => {
+    window.print();
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-dark-100">گزارشات و تحلیل</h1>
-        <p className="text-dark-400 mt-1">آمار و عملکرد فروشگاه</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-dark-100">گزارشات و تحلیل</h1>
+          <p className="text-dark-400 mt-1">آمار و عملکرد فروشگاه</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={downloadAllReports}
+            className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
+          >
+            <Download size={16} />
+            <span>دانلود همه</span>
+          </button>
+          <button
+            onClick={printReport}
+            className="flex items-center gap-2 bg-dark-700 text-dark-200 px-4 py-2.5 rounded-xl hover:bg-dark-600 transition-colors"
+          >
+            <FileText size={16} />
+            <span>چاپ</span>
+          </button>
+        </div>
       </div>
 
       {/* Quick stats */}
@@ -131,6 +200,13 @@ export default function AdminAnalytics() {
             <h3 className="text-lg font-bold text-dark-100">نمودار درآمد</h3>
             <p className="text-sm text-dark-400">درآمد ۱۲ ماه اخیر (میلیون تومان)</p>
           </div>
+          <button
+            onClick={downloadMonthlyReport}
+            className="flex items-center gap-1.5 text-sm text-gold-400 hover:text-gold-300 transition-colors"
+          >
+            <FileSpreadsheet size={14} />
+            <span>دانلود CSV</span>
+          </button>
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={monthlyData}>
@@ -159,7 +235,16 @@ export default function AdminAnalytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category distribution */}
         <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-dark-100 mb-6">سهم دسته‌بندی‌ها</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-dark-100">سهم دسته‌بندی‌ها</h3>
+            <button
+              onClick={downloadCategoryReport}
+              className="flex items-center gap-1.5 text-sm text-gold-400 hover:text-gold-300 transition-colors"
+            >
+              <FileSpreadsheet size={14} />
+              <span>دانلود CSV</span>
+            </button>
+          </div>
           <div className="flex items-center gap-6">
             <ResponsiveContainer width="50%" height={200}>
               <PieChart>
@@ -224,7 +309,16 @@ export default function AdminAnalytics() {
 
       {/* Top products */}
       <div className="bg-dark-800 border border-dark-700 rounded-2xl p-6">
-        <h3 className="text-lg font-bold text-dark-100 mb-6">پرفروش‌ترین محصولات</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-dark-100">پرفروش‌ترین محصولات</h3>
+          <button
+            onClick={downloadTopProductsReport}
+            className="flex items-center gap-1.5 text-sm text-gold-400 hover:text-gold-300 transition-colors"
+          >
+            <FileSpreadsheet size={14} />
+            <span>دانلود CSV</span>
+          </button>
+        </div>
         <div className="space-y-3">
           {topProducts.map((product, index) => (
             <div key={product.name} className="flex items-center gap-4 p-3 bg-dark-700/30 rounded-xl">

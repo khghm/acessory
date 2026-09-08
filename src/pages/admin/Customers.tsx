@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, Mail, Phone, ShoppingBag, MapPin } from 'lucide-react';
+import { Search, Eye, Mail, Phone, ShoppingBag, MapPin, Download } from 'lucide-react';
 
 interface Customer {
   id: number;
@@ -100,12 +100,49 @@ export default function AdminCustomers() {
 
   const formatPrice = (price: number) => new Intl.NumberFormat('fa-IR').format(price);
 
+  // Download CSV function
+  const downloadCustomersCSV = () => {
+    const headers = ['نام', 'ایمیل', 'تلفن', 'شهر', 'تعداد سفارشات', 'مجموع خرید', 'تاریخ عضویت', 'وضعیت'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredCustomers.map(customer => [
+        customer.name,
+        customer.email,
+        customer.phone,
+        customer.city,
+        customer.orders,
+        customer.totalSpent,
+        customer.joinDate,
+        customer.status === 'active' ? 'فعال' : 'غیرفعال'
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'customers-report.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Page header */}
-      <div>
-        <h1 className="text-2xl font-bold text-dark-100">مشتریان</h1>
-        <p className="text-dark-400 mt-1">مدیریت و مشاهده اطلاعات مشتریان</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-dark-100">مشتریان</h1>
+          <p className="text-dark-400 mt-1">مدیریت و مشاهده اطلاعات مشتریان</p>
+        </div>
+        <button
+          onClick={downloadCustomersCSV}
+          className="flex items-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all"
+        >
+          <Download size={16} />
+          <span>دانلود گزارش</span>
+        </button>
       </div>
 
       {/* Stats */}
