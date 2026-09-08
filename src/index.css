@@ -55,6 +55,7 @@ body {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -68,6 +69,16 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #e6b820;
+}
+
+/* Hide scrollbar for categories */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Animations */
