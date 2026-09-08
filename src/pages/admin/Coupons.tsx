@@ -27,6 +27,15 @@ export default function AdminCoupons() {
   const [coupons, setCoupons] = useState(initialCoupons);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [couponForm, setCouponForm] = useState({
+    code: '',
+    type: 'percentage' as 'percentage' | 'fixed',
+    value: '',
+    minOrder: '',
+    maxUses: '',
+    startDate: '',
+    endDate: '',
+  });
 
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
@@ -35,7 +44,37 @@ export default function AdminCoupons() {
   };
 
   const deleteCoupon = (id: number) => {
-    setCoupons(coupons.filter(c => c.id !== id));
+    if (confirm('آیا از حذف این کوپن مطمئن هستید؟')) {
+      setCoupons(coupons.filter(c => c.id !== id));
+    }
+  };
+
+  const handleAddCoupon = () => {
+    if (couponForm.code && couponForm.value) {
+      const newCoupon: Coupon = {
+        id: Math.max(...coupons.map(c => c.id)) + 1,
+        code: couponForm.code.toUpperCase(),
+        type: couponForm.type,
+        value: Number(couponForm.value),
+        minOrder: Number(couponForm.minOrder) || 0,
+        maxUses: Number(couponForm.maxUses) || 100,
+        usedCount: 0,
+        startDate: couponForm.startDate || '۱۴۰۴/۰۱/۲۰',
+        endDate: couponForm.endDate || '۱۴۰۴/۰۳/۳۱',
+        status: 'active',
+      };
+      setCoupons([newCoupon, ...coupons]);
+      setShowAddModal(false);
+      setCouponForm({
+        code: '',
+        type: 'percentage',
+        value: '',
+        minOrder: '',
+        maxUses: '',
+        startDate: '',
+        endDate: '',
+      });
+    }
   };
 
   const stats = {
@@ -211,35 +250,56 @@ export default function AdminCoupons() {
             <h3 className="text-xl font-bold text-dark-100 mb-6">ایجاد کوپن جدید</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-dark-300 mb-1 block">کد تخفیف</label>
+                <label className="text-sm text-dark-300 mb-1 block">کد تخفیف *</label>
                 <input
                   type="text"
+                  value={couponForm.code}
+                  onChange={(e) => setCouponForm({ ...couponForm, code: e.target.value })}
                   className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
                   placeholder="مثال: SUMMER30"
+                  dir="ltr"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm text-dark-300 mb-1 block">نوع تخفیف</label>
-                  <select className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors">
+                  <select
+                    value={couponForm.type}
+                    onChange={(e) => setCouponForm({ ...couponForm, type: e.target.value as 'percentage' | 'fixed' })}
+                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                  >
                     <option value="percentage">درصدی</option>
                     <option value="fixed">مبلغ ثابت</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm text-dark-300 mb-1 block">مقدار تخفیف</label>
+                  <label className="text-sm text-dark-300 mb-1 block">مقدار تخفیف *</label>
                   <input
                     type="number"
+                    value={couponForm.value}
+                    onChange={(e) => setCouponForm({ ...couponForm, value: e.target.value })}
                     className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
                     placeholder="20"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="text-sm text-dark-300 mb-1 block">حداقل مبلغ سفارش (تومان)</label>
+                <input
+                  type="number"
+                  value={couponForm.minOrder}
+                  onChange={(e) => setCouponForm({ ...couponForm, minOrder: e.target.value })}
+                  className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                  placeholder="0"
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm text-dark-300 mb-1 block">تاریخ شروع</label>
                   <input
                     type="text"
+                    value={couponForm.startDate}
+                    onChange={(e) => setCouponForm({ ...couponForm, startDate: e.target.value })}
                     className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
                     placeholder="۱۴۰۴/۰۱/۰۱"
                   />
@@ -248,6 +308,8 @@ export default function AdminCoupons() {
                   <label className="text-sm text-dark-300 mb-1 block">تاریخ پایان</label>
                   <input
                     type="text"
+                    value={couponForm.endDate}
+                    onChange={(e) => setCouponForm({ ...couponForm, endDate: e.target.value })}
                     className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
                     placeholder="۱۴۰۴/۰۳/۳۱"
                   />
@@ -257,6 +319,8 @@ export default function AdminCoupons() {
                 <label className="text-sm text-dark-300 mb-1 block">حداکثر تعداد استفاده</label>
                 <input
                   type="number"
+                  value={couponForm.maxUses}
+                  onChange={(e) => setCouponForm({ ...couponForm, maxUses: e.target.value })}
                   className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
                   placeholder="100"
                 />
@@ -270,8 +334,9 @@ export default function AdminCoupons() {
                 انصراف
               </button>
               <button
-                onClick={() => setShowAddModal(false)}
-                className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium"
+                onClick={handleAddCoupon}
+                disabled={!couponForm.code || !couponForm.value}
+                className="flex-1 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 ایجاد کوپن
               </button>

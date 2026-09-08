@@ -12,13 +12,15 @@ import {
   Calculator,
   Tag,
   UserCog,
-  Headphones
+  Headphones,
+  FolderTree
 } from 'lucide-react';
 
 export default function AdminSidebar() {
   const menuItems = [
     { path: '/admin', icon: LayoutDashboard, label: 'داشبورد' },
     { path: '/admin/products', icon: Package, label: 'محصولات' },
+    { path: '/admin/categories', icon: FolderTree, label: 'دسته‌بندی‌ها' },
     { path: '/admin/orders', icon: ShoppingCart, label: 'سفارشات' },
     { path: '/admin/customers', icon: Users, label: 'مشتریان' },
     { path: '/admin/inventory', icon: Warehouse, label: 'انبار' },

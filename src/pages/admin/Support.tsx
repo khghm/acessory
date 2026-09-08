@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MessageSquare, Clock, CheckCircle, AlertCircle, Search, Filter, Eye, Reply } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, Clock, CheckCircle, AlertCircle, Search, Filter, Eye, Reply, X, Send } from 'lucide-react';
 
 interface Ticket {
   id: string;
@@ -24,11 +24,16 @@ const tickets: Ticket[] = [
 ];
 
 export default function AdminSupport() {
+  const [ticketsList, setTicketsList] = useState<Ticket[]>(tickets);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [showReplyModal, setShowReplyModal] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const [newStatus, setNewStatus] = useState<Ticket['status']>('in-progress');
 
-  const filteredTickets = tickets.filter((t) => {
+  const filteredTickets = ticketsList.filter((t) => {
     const matchesSearch = t.id.includes(searchQuery) || t.customer.includes(searchQuery) || t.subject.includes(searchQuery);
     const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
     const matchesPriority = priorityFilter === 'all' || t.priority === priorityFilter;
@@ -36,10 +41,36 @@ export default function AdminSupport() {
   });
 
   const stats = {
-    total: tickets.length,
-    open: tickets.filter(t => t.status === 'open').length,
-    inProgress: tickets.filter(t => t.status === 'in-progress').length,
-    resolved: tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length,
+    total: ticketsList.length,
+    open: ticketsList.filter(t => t.status === 'open').length,
+    inProgress: ticketsList.filter(t => t.status === 'in-progress').length,
+    resolved: ticketsList.filter(t => t.status === 'resolved' || t.status === 'closed').length,
+  };
+
+  const openReplyModal = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setReplyMessage('');
+    setNewStatus(ticket.status === 'open' ? 'in-progress' : ticket.status);
+    setShowReplyModal(true);
+  };
+
+  const handleReply = () => {
+    if (selectedTicket && replyMessage) {
+      setTicketsList(ticketsList.map(t => {
+        if (t.id === selectedTicket.id) {
+          return {
+            ...t,
+            status: newStatus,
+            replies: t.replies + 1,
+            updatedAt: '۱۴۰۴/۰۱/۲۰',
+          };
+        }
+        return t;
+      }));
+      setShowReplyModal(false);
+      setSelectedTicket(null);
+      setReplyMessage('');
+    }
   };
 
   const statusConfig = {
@@ -192,7 +223,10 @@ export default function AdminSupport() {
                   <button className="p-2 text-dark-400 hover:text-gold-400 transition-colors">
                     <Eye size={16} />
                   </button>
-                  <button className="p-2 text-dark-400 hover:text-blue-400 transition-colors">
+                  <button
+                    onClick={() => openReplyModal(ticket)}
+                    className="p-2 text-dark-400 hover:text-blue-400 transition-colors"
+                  >
                     <Reply size={16} />
                   </button>
                 </div>
@@ -215,6 +249,91 @@ export default function AdminSupport() {
           );
         })}
       </div>
+
+      {/* Reply Modal */}
+      <AnimatePresence>
+        {showReplyModal && selectedTicket && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowReplyModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-dark-800 border border-dark-700 rounded-2xl p-6 w-full max-w-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-dark-100">پاسخ به تیکت {selectedTicket.id}</h3>
+                <button
+                  onClick={() => setShowReplyModal(false)}
+                  className="text-dark-400 hover:text-dark-200 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              {/* Ticket info */}
+              <div className="bg-dark-700/50 rounded-xl p-4 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-dark-100">{selectedTicket.customer}</p>
+                  <span className="text-xs text-dark-400">{selectedTicket.createdAt}</span>
+                </div>
+                <h4 className="text-sm font-medium text-gold-400 mb-2">{selectedTicket.subject}</h4>
+                <p className="text-sm text-dark-300">{selectedTicket.message}</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-dark-300 mb-1 block">پاسخ شما *</label>
+                  <textarea
+                    rows={4}
+                    value={replyMessage}
+                    onChange={(e) => setReplyMessage(e.target.value)}
+                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors resize-none"
+                    placeholder="پاسخ خود را بنویسید..."
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm text-dark-300 mb-1 block">تغییر وضعیت</label>
+                  <select
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value as Ticket['status'])}
+                    className="w-full bg-dark-700 border border-dark-600 rounded-xl px-4 py-2.5 text-dark-100 focus:outline-none focus:border-gold-500 transition-colors"
+                  >
+                    <option value="open">باز</option>
+                    <option value="in-progress">در حال بررسی</option>
+                    <option value="resolved">حل شده</option>
+                    <option value="closed">بسته شده</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 mt-6">
+                <button
+                  onClick={() => setShowReplyModal(false)}
+                  className="flex-1 bg-dark-700 text-dark-200 px-4 py-2.5 rounded-xl hover:bg-dark-600 transition-colors"
+                >
+                  انصراف
+                </button>
+                <button
+                  onClick={handleReply}
+                  disabled={!replyMessage}
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 px-4 py-2.5 rounded-xl font-medium hover:shadow-lg hover:shadow-gold-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send size={16} />
+                  <span>ارسال پاسخ</span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
